@@ -20,9 +20,22 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.lang.IllegalArgumentException;
 
 public class Drivebase extends SubsystemBase {
+    
+  CANSparkMax m_leftMaster = new CANSparkMax(1, MotorType.kBrushless);
+  CANSparkMax m_leftSlave = new CANSparkMax(2, MotorType.kBrushless);
+  CANSparkMax m_rightMaster = new CANSparkMax(3, MotorType.kBrushless);
+  CANSparkMax m_rightSlave  = new CANSparkMax(4, MotorType.kBrushless);
+
+  MotorControllerGroup m_rightGroup = new MotorControllerGroup(m_rightMaster, m_rightSlave);
+  MotorControllerGroup m_leftGroup = new MotorControllerGroup(m_leftMaster, m_leftSlave);
+  DifferentialDrive m_differentialDrive = new DifferentialDrive(m_leftGroup, m_rightGroup);
+
+  public final AHRS m_AHRS = new AHRS(Port.kMXP);
+  PIDController m_PIDController = new PIDController(0.1, 0.1, 0.1);
+
   /** Creates a new ExampleSubsystem. */
   public Drivebase() {
-    m_rightMaster.setInverted(true);
+    m_rightGroup.setInverted(true);
   }
 
   /**
@@ -38,34 +51,14 @@ public class Drivebase extends SubsystemBase {
           /* one-time action goes here */
         });
   }
-  
-  CANSparkMax m_leftMaster = new CANSparkMax(1, MotorType.kBrushless);
-  CANSparkMax m_leftSlave = new CANSparkMax(2, MotorType.kBrushless);
-  CANSparkMax m_rightMaster = new CANSparkMax(3, MotorType.kBrushless);
-  CANSparkMax m_rightSlave  = new CANSparkMax(4, MotorType.kBrushless);
-
-  MotorControllerGroup m_rightGroup = new MotorControllerGroup(m_rightMaster, m_rightSlave);
-  MotorControllerGroup m_leftGroup = new MotorControllerGroup(m_leftMaster, m_leftSlave);
-  DifferentialDrive m_differentialDrive = new DifferentialDrive(m_leftGroup, m_rightGroup);
 
   public void arcadeDrive(double speed, double rotation) {
     m_differentialDrive.arcadeDrive(speed, rotation);
   }
 
-  public final AHRS m_AHRS = new AHRS(Port.kMXP);
-  PIDController m_PIDController = new PIDController(0.1, 0.1, 0.1);
-
   public void turn(double angle) {
     m_differentialDrive.arcadeDrive(0, m_PIDController.calculate(m_AHRS.getAngle(), angle));
   }
-
-
-
-
-
-
-
-
 
   /**
    * An example method querying a boolean state of the subsystem (for example, a digital sensor).

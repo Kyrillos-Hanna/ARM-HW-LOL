@@ -4,7 +4,9 @@
 
 package frc.robot.commands;
 
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.Arm;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /** An example command that uses an example subsystem. */
@@ -25,11 +27,30 @@ public class ControlArm extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    m_arm.changeAngle(0,0);
+    m_arm.extendLength(0,0);
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    if (RobotContainer.m_XboxController2.getBButtonPressed() == true) {
+      m_arm.extendLength(0,0);
+    }
+    if (RobotContainer.m_XboxController2.getAButtonPressed() == true){
+      m_arm.extendLength(100, 100);
+    }
+    if (RobotContainer.m_XboxController2.getYButtonPressed() == true){
+      m_arm.changeAngle(0,0);
+    }
+    if (RobotContainer.m_XboxController2.getXButtonPressed() == true) {
+      m_arm.changeAngle(100, 100);
+    }
+    m_arm.changeAngle(RobotContainer.m_XboxController2.getLeftY(), 0);
+    m_arm.extendLength(0, RobotContainer.m_XboxController2.getLeftX());
+    }
+  
 
   // Called once the command ends or is interrupted.
   @Override
@@ -41,3 +62,4 @@ public class ControlArm extends CommandBase {
     return false;
   }
 }
+
