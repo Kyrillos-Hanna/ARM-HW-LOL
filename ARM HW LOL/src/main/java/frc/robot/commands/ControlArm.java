@@ -47,8 +47,6 @@ public class ControlArm extends CommandBase {
     if (RobotContainer.m_XboxController2.getXButtonPressed() == true) {
       m_arm.changeAngle(100, 100);
     }
-    m_arm.changeAngle(RobotContainer.m_XboxController2.getLeftY(), 0);
-    m_arm.extendLength(0, RobotContainer.m_XboxController2.getLeftX());
     }
   
 

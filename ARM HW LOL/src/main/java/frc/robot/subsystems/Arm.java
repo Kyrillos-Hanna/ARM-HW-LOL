@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
@@ -39,10 +40,10 @@ public class Arm extends SubsystemBase {
   }
 
  CANSparkMax m_motor1 = new CANSparkMax(1, MotorType.kBrushless);
- RelativeEncoder m_encoder1 = m_motor1.getEncoder(Type.kQuadrature, 0);
+ RelativeEncoder m_encoder1 = m_motor1.getEncoder(Type.kQuadrature, 8192);
 
  CANSparkMax m_motor2 = new CANSparkMax(2, MotorType.kBrushless);
- RelativeEncoder m_encoder2 = m_motor1.getEncoder(Type.kQuadrature, 0);
+ RelativeEncoder m_encoder2 = m_motor1.getEncoder(Type.kQuadrature, 8192);
 
  PIDController m_PIDController = new PIDController(0.1, 0.1, 0.1);
  PIDController m_2PIDController = new PIDController(0.1, 0.1, 0.1);
@@ -59,18 +60,21 @@ double SPX1;
   double theta1 = 360 * m_encoder1.getPosition();
   double theta2 = Math.atan((SPY / SPX));
   double output = m_PIDController.calculate(theta1, theta2);
-  SmartDashboard.putNumber("Angle", output);
-  m_motor1.setVoltage(output);
+  SmartDashboard.putNumber("Angle", theta1);
+  m_motor1.set(output);
  }
 
  public void extendLength(double SPy, double SPx) {
   SPX1 = SPx;
   SPY1 = SPy;
   double setPoint = Math.sqrt(Math.pow((SPX - 0), 2) + Math.pow((SPY - 3), 2));
-  double r3Length = 3 * (m_encoder2.getPosition()) + 2;
+  double r2Length = 3 * (m_encoder2.getPosition()) + 2;
+  double r3Length = r2Length + Constants.ElevatorConstants.r1;
   double howMuchToMove = m_2PIDController.calculate(r3Length, setPoint);
-  m_motor2.setVoltage(howMuchToMove);
+  m_motor2.set(howMuchToMove);
  }
+
+
 
 
 
